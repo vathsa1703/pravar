@@ -6,7 +6,12 @@ from sqlalchemy.orm import Session, sessionmaker
 from app.config import get_settings
 
 # Sync SQLAlchemy: simple, and plenty fast for a single-screen CRUD app.
-engine = create_engine(get_settings().database_url, pool_pre_ping=True)
+engine = create_engine(
+    get_settings().database_url,
+    pool_pre_ping=True,
+    # Always talk to Postgres in UTC so timestamps serialize consistently.
+    connect_args={"options": "-c timezone=utc"},
+)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 
 
