@@ -2,7 +2,7 @@ import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Lead } from "@/lib/types";
-import { LeadRow } from "./LeadRow";
+import { FollowUpSection } from "./FollowUpSection";
 
 interface LeadListProps {
   leads: Lead[] | undefined;
@@ -39,14 +39,20 @@ export function LeadList({ leads, isLoading, error, onRetry, isFiltered, onOpen 
     );
   }
 
+  // The API already sorts today's follow-ups first (by time), then the rest by
+  // last activity. We only split the list in two to give "today" its own header.
+  const today = leads.filter((lead) => lead.follow_up_today);
+  const rest = leads.filter((lead) => !lead.follow_up_today);
+
   return (
-    <section aria-label="Leads" className="overflow-hidden rounded-xl border bg-card">
-      <ul className="divide-y">
-        {leads.map((lead) => (
-          <LeadRow key={lead.id} lead={lead} onOpen={onOpen} />
-        ))}
-      </ul>
-    </section>
+    <div className="flex flex-col gap-5">
+      {today.length > 0 && (
+        <FollowUpSection title="Follow-ups today" leads={today} onOpen={onOpen} highlight />
+      )}
+      {rest.length > 0 && (
+        <FollowUpSection title={today.length > 0 ? "All other leads" : "Leads"} leads={rest} onOpen={onOpen} />
+      )}
+    </div>
   );
 }
 
