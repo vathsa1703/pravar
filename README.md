@@ -1,5 +1,7 @@
 # LeadFlow
 
+[![CI](https://github.com/vathsa1703/pravar/actions/workflows/ci.yml/badge.svg)](https://github.com/vathsa1703/pravar/actions/workflows/ci.yml)
+
 LeadFlow is a single-screen lead management tool (a lightweight CRM). A sales rep can:
 
 - see every lead with its status, last discussion and next follow-up
@@ -250,6 +252,11 @@ npm test          # lib/time.test.ts, runs pinned to Asia/Kolkata so "local day"
 npm run lint
 ```
 
+**Continuous integration** ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs on every push and pull request:
+
+- **docker** job: on a clean Ubuntu runner it does exactly what the Quick start says. It runs `cp .env.example .env`, `docker compose up --build` (waiting for the health checks) and the seed script. It then checks that the API returns the seeded leads, that 404 and 422 use the JSON error shape, that CORS allows `http://localhost:3000`, and that the frontend serves the page. Finally it runs **pytest inside the backend container**. If anything fails, it prints the container logs.
+- **frontend** job: `npm ci`, lint, Vitest and `next build` on Node 22.
+
 **End-to-end:** I drove the full flow with Playwright scripts (not committed): open a lead without navigating, add discussions with and without follow-ups, check the list row updates with no reload, Ctrl+Enter, the blank-note error, clear follow-up, change status and reload, filter + search, and add a lead with validation errors. The screenshots in `docs/screenshots` come from those runs.
 
 ## How I used AI
@@ -260,7 +267,7 @@ npm run lint
 
 **How it checked its own work.** After each phase it ran the code: pytest against a real Postgres, `curl` against the running API, `tsc`/`eslint`/`next build`, the production standalone server, and Playwright scripts that clicked through the UI and took the screenshots in this repo. Bugs it found and fixed along the way included: seeded "today" follow-ups landing after midnight when the seed ran late in the evening, a shadcn font variable that referenced itself (so the page fell back to a serif font), Playwright being unable to find list rows while the modal was open (expected: the modal hides the background from assistive tech), and the test setup ignoring the database URL in `.env`.
 
-**What was NOT verified by the AI.** Docker was not installed on the development machine, so `docker compose up --build` was **not** run. Each part it relies on was checked separately: the backend start command (`alembic upgrade head && uvicorn`), the Next.js standalone server that the frontend image runs, and that the Compose YAML parses.
+**What was NOT verified locally by the AI.** Docker could not be installed on the development machine (it needs admin rights), so `docker compose up --build` was never run there. Each part was checked separately instead: the backend start command (`alembic upgrade head && uvicorn`), the Next.js standalone server the frontend image runs, and that the Compose YAML parses. The full Docker setup is verified by the **CI docker job** on GitHub (see Testing). Its result is the badge at the top of this README.
 
 **My own review and changes** *(to be filled in by me, not by the AI):*
 
