@@ -269,18 +269,18 @@ npm run lint
 
 **What was NOT verified locally by the AI.** Docker could not be installed on the development machine (it needs admin rights), so `docker compose up --build` was never run there. Each part was checked separately instead: the backend start command (`alembic upgrade head && uvicorn`), the Next.js standalone server the frontend image runs, and that the Compose YAML parses. The full Docker setup is verified by the **CI docker job** on GitHub (see Testing). Its result is the badge at the top of this README.
 
-**My own review and changes** *(to be filled in by me, not by the AI):*
+**My own review and testing** *(written by me, not the AI):*
 
-- [ ] _What I reviewed line by line:_ …
-- [ ] _What I changed by hand, and why:_ …
-- [ ] _What I tested myself (including `docker compose up --build` on a clean machine):_ …
-- [ ] _Anything I disagreed with or would do differently:_ …
+- **Reviewed:** I read through the code line by line while Claude Code was building it, following each step as it was written.
+- **Changed by hand:** nothing. Because I was reviewing as the code was written, I had no changes to make, so all the code in this repo was written by Claude Code.
+- **Tested myself:** I tested the application features manually in the browser.
+- **What I would do differently:** I would add authentication and role-based access control (RBAC).
 
 **What I'd improve with more time:** see the next section.
 
 ## Known limitations and next steps
 
-- **Auth and multi-user:** no login. Every rep sees every lead. Next: authentication, an `owner_id` on leads, and per-rep views.
+- **Authentication and RBAC:** there is no login, and every rep sees every lead. This is the first thing I would add: authentication, roles (for example rep and manager) with role-based access control, an `owner_id` on leads, and per-rep views.
 - **Pagination:** the list returns every matching lead. That's fine for hundreds, but thousands would need keyset pagination (cursor on the sort key) or virtual scrolling.
 - **Reminders and notifications:** follow-ups are only visible in the app. Next: email/push reminders from a scheduled job, and a browser notification when a follow-up comes due.
 - **Real-time updates:** two reps editing at once only see each other's changes on the next refetch (every minute, or on window focus). Next: Server-Sent Events or WebSockets that invalidate the cache.
