@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { LeadTimelineDialog } from "@/components/lead-dialog/LeadTimelineDialog";
+import { AddLeadDialog } from "@/components/lead-form/AddLeadDialog";
 import { LeadFilters } from "@/components/lead-list/LeadFilters";
 import { LeadList } from "@/components/lead-list/LeadList";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
@@ -23,6 +24,7 @@ export default function Home() {
           <h1 className="text-2xl font-semibold tracking-tight">LeadFlow</h1>
           <p className="text-sm text-muted-foreground">Your leads, discussions and follow-ups.</p>
         </div>
+        <AddLeadDialog />
       </header>
 
       <LeadFilters search={search} onSearchChange={setSearch} status={status} onStatusChange={setStatus} />
