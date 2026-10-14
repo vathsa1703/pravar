@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/lead-list/StatusBadge";
-import { useDiscussions, useLead } from "@/hooks/useLeads";
+import { toast } from "sonner";
+import { useDiscussions, useLead, useUpdateLead } from "@/hooks/useLeads";
 import { formatDateTime } from "@/lib/time";
 import type { Lead } from "@/lib/types";
+import { AddDiscussionForm } from "./AddDiscussionForm";
 import { DiscussionItem } from "./DiscussionItem";
 
 interface LeadTimelineDialogProps {
@@ -44,6 +46,7 @@ export function LeadTimelineDialog({ lead: clickedLead, onClose }: LeadTimelineD
                 <span className="inline-flex items-center gap-1.5">
                   <CalendarClock className="size-3.5" aria-hidden />
                   {lead.next_follow_up_at ? `Follow-up ${formatDateTime(lead.next_follow_up_at)}` : "No follow-up"}
+                  {lead.next_follow_up_at && <ClearFollowUpButton leadId={lead.id} />}
                 </span>
               </DialogDescription>
             </DialogHeader>
@@ -75,9 +78,34 @@ export function LeadTimelineDialog({ lead: clickedLead, onClose }: LeadTimelineD
                 </ol>
               )}
             </section>
+
+            <AddDiscussionForm key={lead.id} leadId={lead.id} />
           </>
         )}
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** Saving a note without a date keeps the follow-up, so removing one is an explicit action. */
+function ClearFollowUpButton({ leadId }: { leadId: number }) {
+  const updateLead = useUpdateLead(leadId);
+  return (
+    <button
+      type="button"
+      className="ml-1 rounded text-xs font-medium text-foreground underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-50"
+      disabled={updateLead.isPending}
+      onClick={() =>
+        updateLead.mutate(
+          { next_follow_up_at: null },
+          {
+            onSuccess: () => toast.success("Follow-up cleared"),
+            onError: (err) => toast.error(`Could not clear follow-up: ${err.message}`),
+          },
+        )
+      }
+    >
+      Clear follow-up
+    </button>
   );
 }
