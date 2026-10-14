@@ -11,6 +11,7 @@ import { formatDateTime } from "@/lib/time";
 import type { Lead } from "@/lib/types";
 import { AddDiscussionForm } from "./AddDiscussionForm";
 import { DiscussionItem } from "./DiscussionItem";
+import { StatusSelect } from "./StatusSelect";
 
 interface LeadTimelineDialogProps {
   /** The row that was clicked; null when the dialog is closed. */
@@ -30,9 +31,12 @@ export function LeadTimelineDialog({ lead: clickedLead, onClose }: LeadTimelineD
         {lead && (
           <>
             <DialogHeader className="gap-2 border-b p-5 pr-12">
-              <div className="flex flex-wrap items-center gap-2">
-                <DialogTitle className="text-lg">{lead.name}</DialogTitle>
-                <StatusBadge status={lead.status} />
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <DialogTitle className="text-lg">{lead.name}</DialogTitle>
+                  <StatusBadge status={lead.status} />
+                </div>
+                <StatusSelect leadId={lead.id} status={lead.status} />
               </div>
               <DialogDescription className="flex flex-wrap gap-x-4 gap-y-1">
                 <span className="inline-flex items-center gap-1.5">
