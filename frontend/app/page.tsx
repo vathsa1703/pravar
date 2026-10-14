@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { LeadTimelineDialog } from "@/components/lead-dialog/LeadTimelineDialog";
 import { LeadFilters } from "@/components/lead-list/LeadFilters";
 import { LeadList } from "@/components/lead-list/LeadList";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
@@ -13,7 +14,7 @@ export default function Home() {
   const q = useDebouncedValue(search, 300);
 
   const leadsQuery = useLeads({ status, q: q.trim() });
-  const [, setSelectedLead] = useState<Lead | null>(null);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-6 sm:px-6 sm:py-10">
@@ -34,6 +35,8 @@ export default function Home() {
         isFiltered={status !== "all" || q.trim() !== ""}
         onOpen={setSelectedLead}
       />
+
+      <LeadTimelineDialog lead={selectedLead} onClose={() => setSelectedLead(null)} />
     </main>
   );
 }
