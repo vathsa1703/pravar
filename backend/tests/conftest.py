@@ -8,9 +8,10 @@ import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import make_url
 
-_base_url = make_url(
-    os.environ.get("DATABASE_URL", "postgresql+psycopg://leadflow:leadflow@localhost:5432/leadflow")
-)
+from app.config import Settings
+
+# Same source as the app: env vars first, then .env.
+_base_url = make_url(Settings().database_url)
 _test_url = make_url(
     os.environ.get("TEST_DATABASE_URL")
     or _base_url.set(database=f"{_base_url.database}_test").render_as_string(hide_password=False)
