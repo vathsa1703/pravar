@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/vathsa1703/pravar/actions/workflows/ci.yml/badge.svg)](https://github.com/vathsa1703/pravar/actions/workflows/ci.yml)
 
+**Demo video:** [Watch the walkthrough on Loom](https://www.loom.com/share/01873d50ad094b1397f710a2ed32964a) · click-through script in [docs/DEMO.md](docs/DEMO.md)
+
 LeadFlow is a single-screen lead management tool (a lightweight CRM). A sales rep can:
 
 - see every lead with its status, last discussion and next follow-up
